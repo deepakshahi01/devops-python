@@ -1,0 +1,25 @@
+name: docker build and deployment
+
+on:
+  workflow_dispatch:
+    inputs: 
+      tag:
+        description: version tag for docker image
+        required: true
+        default: 'latest'
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6.0.2
+      - name: build docker image
+        run: docker build -t devdeepak07/python:latest
+      - name: docker login
+        uses: docker/login-action@v3.7.0
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: push docker image
+        run: docker push devdeepak07/python:latest
